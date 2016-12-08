@@ -168,8 +168,8 @@ var CmtimelineCtrl = function($scope, $http) {
 
     function processGezoEvent(eventData){
     	var date = CMStr2Date(eventData.baDat);
-    	var bed = (eventData.totaal.length  > 0) ? parseFloat(eventData.totaal) : 0.0;
-    	var ziv = (eventData.ziv.length  > 0) ? parseFloat(eventData.ziv) : 0.0;
+    	var bed = eventData.totaal;
+    	var ziv = eventData.ziv;
     	var perstus = bed-ziv;
         return {
             type: 'consult',
@@ -234,8 +234,8 @@ var CmtimelineCtrl = function($scope, $http) {
 
     function processFarmaEvent(eventData){
     	var date = CMStr2Date(eventData.baDat);
-    	var bed = (eventData.totaal.length  > 0) ? parseFloat(eventData.totaal) : 0.0;
-    	var ziv = (eventData.ziv.length  > 0) ? parseFloat(eventData.ziv) : 0.0;
+    	var bed = eventData.totaal;
+    	var ziv = eventData.ziv;
     	var perstus = bed-ziv;
         return {
             type: 'farma',
