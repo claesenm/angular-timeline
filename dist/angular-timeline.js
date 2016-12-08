@@ -17,6 +17,24 @@ angular.module('angular-timeline').directive('timelineBadge', function() {
   };
 });
 
+// Source: src/timeline-date-directive.js
+/**
+ * @ngdoc directive
+ * @name angular-timeline.directive:timeline-date
+ * @restrict AE
+ *
+ * @description
+ * An panel inside the `timeline-event` which shows detailed information about the event.
+ */
+angular.module('angular-timeline').directive('timelineDate', function() {
+  return {
+    require: '^timeline',
+    restrict: 'AE',
+    transclude: true,
+    template: '<div class="timeline-date" ng-transclude></div>'
+  };
+});
+
 // Source: src/timeline-directive.js
 /**
  * @ngdoc directive
@@ -56,6 +74,14 @@ angular.module('angular-timeline').directive('timelineEvent', function() {
     restrict: 'AE',
     transclude: true,
     template: '<li class="timeline-event" ng-class-odd="oddClass" ng-class-even="evenClass" ng-transclude></li>',
+    /*
+       template: '<li class="timeline-event" ng-class-odd="oddClass" ng-class-even="evenClass" ng-transclude
+                  ng-style="eventColor" ng-mouseenter="eventColor={'background-color':'#dedede'}"></li>',
+    */
+    /*
+        template: '<li class="timeline-event" ng-class-odd="oddClass" ng-class-even="evenClass" ng-transclude
+                   ng-style="eventStyle" ng-mouseleave="eventStyle={}" ng-mouseenter="eventStyle={'background-color':'#000000'}"></li>',
+    */
     link: function(scope, element, attrs, controller) {
 
       var checkClass = function(side, leftSide) {
@@ -87,6 +113,16 @@ angular.module('angular-timeline').directive('timelineEvent', function() {
       });
 
       updateRowClasses(attrs.side);
+
+      /* http://stackoverflow.com/a/24225863 */
+      element
+        .on('mouseenter', function() {
+          element.css('background-color', '#dedede');
+        })
+        .on('mouseleave', function() {
+          element.css('background-color', 'transparant');
+        });
+
     }
   };
 });
@@ -144,3 +180,16 @@ angular.module('angular-timeline').directive('timelinePanel', function() {
     template: '<div class="timeline-panel" ng-transclude></div>'
   };
 });
+
+/*
+angular.module('angular-timeline').directive('collapseToggler', function(){
+  return {
+    restrict: 'A'
+    link: function(scope, elem, attrs) {
+      elem.on('click', function() {
+        $(this).siblings('.collapse').toggleClass('in');
+      });
+    }
+  };
+})
+*/

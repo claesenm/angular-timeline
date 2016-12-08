@@ -32,6 +32,15 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "angular-timeline.directive:timeline-date",
+      "shortName": "timeline-date",
+      "type": "directive",
+      "moduleName": "angular-timeline",
+      "shortDescription": "An panel inside the timeline-event which shows detailed information about the event.",
+      "keywords": "ae angular-timeline api detailed directive event inside panel timeline-event"
+    },
+    {
+      "section": "api",
       "id": "angular-timeline.directive:timeline-footer",
       "shortName": "timeline-footer",
       "type": "directive",

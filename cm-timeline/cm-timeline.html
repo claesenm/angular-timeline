@@ -1,0 +1,134 @@
+<div class="container-fluid">
+<h1>Simple Timeline {{greeting}}</h1>
+   <button ng-click="addEvent()">Add New Event</button>
+   <!--   <button ng-click="leftAlign()">Left Side</button>
+   <button ng-click="rightAlign()">Right Side</button>
+   <button ng-click="defaultAlign()">Alternate Sides</button> -->
+  <br/>
+  <br/>
+  <timeline>
+    <!-- can also hard-code to side="left" or side="right" -->
+    <timeline-event ng-repeat="event in events" side="right">
+
+      <timeline-date ng-if="event.date" class="{{event.badgeClass}} timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+      <p><b>{{event.day}}</b><br>{{event.dateText}}</p>
+      </timeline-date>
+
+      <!-- uses angular-scroll-animate to give it some pop -->
+      <timeline-badge class="{{event.badgeClass}} timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <i class="glyphicon {{event.badgeIconClass}}"></i>
+      </timeline-badge>
+
+      <!-- uses angular-scroll-animate to give it some pop -->
+      <timeline-panel class="{{event.badgeClass}} timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <timeline-heading>
+          <h4 ng-if="!event.type">Unknown event type</h4>
+          <h4 ng-if="event.type == 'consult'">Consultatie met {{event.physician}} <span ng-if="event.hospitalised == true">(tijdens opname)</span></h4>
+          <h4 ng-if="event.type == 'farma'">Aankoop van {{event.productName}}</h4>
+        </timeline-heading>
+
+<!-- GEZO EVENTS -->
+
+        <div ng-if="event.type == 'consult'">
+        <div class="event-checkbox"><input type="checkbox" ng-model="event.showDetails" ng-init="checked=false"> meer info over de consultatie</div>
+        <div ng-show="event.showDetails" ng-if="event.description" class="event-description">
+          <div class="panel-subheading">Algemene informatie</div>
+            Beschrijving: {{event.description}}<br>
+            Plaats: {{event.location}}</p>
+
+          <div class="panel-subheading" ng-if="event.costTotal">Kostenoverzicht</div>
+          <div ng-show="event.showDetails" ng-if="event.costTotal" class="event-costs">            
+            <p>
+                Totale kost<br>
+                Tussenkomst ziekenfonds<br>
+                Persoonlijke tussenkomst
+            </p>
+            <p style="text-align: right">
+                {{event.costTotal}} EUR<br>
+                {{event.costZIV}} EUR<br>
+                {{event.costPerstus}} EUR
+            </p>
+            <p style="text-align: right"> <!-- http://stackoverflow.com/a/16241931 -->
+                100%<br>
+                {{(100*event.costZIV/event.costTotal)| number:0}}%<br>
+                {{100*event.costPerstus/event.costTotal| number:0}}%
+            </p>
+          </div>
+        </div>
+        <div ng-if="event.costs" class="event-checkbox">
+            <input type="checkbox" ng-model="event.costsDetailed" ng-init="checked=false"> gedetailleerd kostenoverzicht</div>
+
+        <div ng-show="event.costsDetailed" width="90%" class="event-costs">
+            <div class="panel-subheading">Gedetailleerd kostenoverzicht van de consultatie</div>
+            <table>
+                <tbody>
+                    <tr><th>Code verstrekking</th>
+                        <th>Totaal bedrag</th>
+                        <th>ZIV bedrag</th>
+                        <th>Eigen kost</th>
+                        <th>Percentage</th>
+                    </tr>
+                    <tr ng-repeat-start="c in event.costs">
+                        <td align="left"><input type="checkbox" ng-model="c.showNomenDescription" ng-init="checked=false"> {{c.nomenclature}}</div></td>
+                        <td align="right">{{c.total}} EUR</td>
+                        <td align="right">{{c.ZIV}} EUR</td>
+                        <td align="right">{{c.perstus}} EUR</td>
+                        <td align="right">{{100*c.perstus/c.total| number:0}}%</td>
+                    </tr>
+                    <tr ng-repeat-end ng-show="c.showNomenDescription"><td colspan="42", align="left">Beschrijving: {{c.description}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+<!-- FARMA EVENTS -->
+
+        <div ng-if="event.type == 'farma'">
+        <div class="event-checkbox"><input type="checkbox" ng-model="event.showDetails" ng-init="checked=false"> meer info over deze aankoop</div>
+        <div ng-show="event.showDetails" ng-if="event.description" class="event-description">
+          <div class="panel-subheading">Algemene informatie</div>
+          <p>
+            Voorschrijver: {{event.physician}}<br>
+            Verstrekker: {{event.pharmacy}}<br>
+            Beschrijving: {{event.description}}
+          </p>
+          
+          <div class="panel-subheading">Codering</div>
+          <p>CNK code: <i>{{event.cnk}}</i><br>
+          ATC code(s): <i>{{event.atc}}</i></p>
+
+          <div ng-if="event.costTotal" class="panel-subheading">Kostenoverzicht</div>
+        <div ng-if="event.costTotal" class="event-costs">
+            <img src="icons/euro.png" alt="Euro symbol">
+            <p>
+                Totale kost<br>
+                Tussenkomst ziekenfonds<br>
+                Persoonlijke tussenkomst
+            </p>
+            <p style="text-align: right">
+                {{event.costTotal}} EUR<br>
+                {{event.costZIV}} EUR<br>
+                {{event.costPerstus}} EUR
+            </p>
+            <p style="text-align: right"> <!-- http://stackoverflow.com/a/16241931 -->
+                100%<br>
+                {{(100*event.costZIV/event.costTotal)| number:0}}%<br>
+                {{100*event.costPerstus/event.costTotal| number:0}}%
+            </p>
+        </div>
+
+
+        </div>
+        <div ng-if="event.content" ng-bind-html="event.contentHtml"></div>
+<!--
+        <timeline-footer ng-if="event.footerContentHtml">
+          <span ng-bind-html="event.footerContentHtml"></span>
+        </timeline-footer>
+-->
+      </timeline-panel>
+    </timeline-event>
+  </timeline>
+</div>

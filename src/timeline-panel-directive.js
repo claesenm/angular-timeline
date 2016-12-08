@@ -16,3 +16,16 @@ angular.module('angular-timeline').directive('timelinePanel', function() {
     template: '<div class="timeline-panel" ng-transclude></div>'
   };
 });
+
+/*
+angular.module('angular-timeline').directive('collapseToggler', function(){
+  return {
+    restrict: 'A'
+    link: function(scope, elem, attrs) {
+      elem.on('click', function() {
+        $(this).siblings('.collapse').toggleClass('in');
+      });
+    }
+  };
+})
+*/

@@ -20,6 +20,14 @@ angular.module('angular-timeline').directive('timelineEvent', function() {
     restrict: 'AE',
     transclude: true,
     template: '<li class="timeline-event" ng-class-odd="oddClass" ng-class-even="evenClass" ng-transclude></li>',
+    /*
+       template: '<li class="timeline-event" ng-class-odd="oddClass" ng-class-even="evenClass" ng-transclude
+                  ng-style="eventColor" ng-mouseenter="eventColor={'background-color':'#dedede'}"></li>',
+    */
+    /*
+        template: '<li class="timeline-event" ng-class-odd="oddClass" ng-class-even="evenClass" ng-transclude
+                   ng-style="eventStyle" ng-mouseleave="eventStyle={}" ng-mouseenter="eventStyle={'background-color':'#000000'}"></li>',
+    */
     link: function(scope, element, attrs, controller) {
 
       var checkClass = function(side, leftSide) {
@@ -51,6 +59,16 @@ angular.module('angular-timeline').directive('timelineEvent', function() {
       });
 
       updateRowClasses(attrs.side);
+
+      /* http://stackoverflow.com/a/24225863 */
+      element
+        .on('mouseenter', function() {
+          element.css('background-color', '#dedede');
+        })
+        .on('mouseleave', function() {
+          element.css('background-color', 'transparant');
+        });
+
     }
   };
 });
