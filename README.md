@@ -1,3 +1,8 @@
+Disclaimer: this is a semi-fork of https://github.com/rpocklin/angular-timeline. The basic idea and framework is reused from that repo and license-wise we follow the original author.
+
+Note that some minor modifications have been made to the source of angular-timeline itself, but most differences compared to the original are extensions.
+
+
 # Angular Timeline
 
 An Angular.js directive that generates a responsive, data-driven vertical timeline to tell a story, 
