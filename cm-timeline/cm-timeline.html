@@ -1,12 +1,110 @@
 <div class="container-fluid">
-<h1>Simple Timeline {{greeting}}</h1>
-   <button ng-click="addEvent()">Add New Event</button>
-   <!--   <button ng-click="leftAlign()">Left Side</button>
+<h1>Medische tijdslijn van {{lidano}} {{greeting}}</h1>
+<!--   <button ng-click="addEvent()">Add New Event</button>
+   <button ng-click="leftAlign()">Left Side</button>
    <button ng-click="rightAlign()">Right Side</button>
    <button ng-click="defaultAlign()">Alternate Sides</button> -->
-  <br/>
-  <br/>
-  <timeline>
+
+<div class="event-checkbox"><input type="checkbox" ng-model="showFuture" ng-init="showFuture=true" /> toon info voor de toekomst</div>
+<div class="event-checkbox"><input type="checkbox" ng-model="showPast" ng-init="showPast=true" /> toon info uit het verleden</div>
+<br>
+<br>
+
+  <timeline ng-show="showFuture">
+    <timeline-event side="right">
+      <timeline-date class="info timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+      <p><b>TOdO</b><br>15 oktober 2017</p>
+      </timeline-date>
+      <timeline-badge class="timeline-badge timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <img src="icons/vaccination.png" alt="hospi" width="50px" class="badge-img">
+      </timeline-badge>
+      <timeline-panel class="info timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <timeline-heading>
+          <h4>Griepvaccinatie</h4>
+        </timeline-heading>
+        <div class="event-checkbox"><input type="checkbox" ng-model="vacc.showDetails" ng-init="vacc.showDetails=false"> meer info</div>        
+        <div ng-show="vacc.showDetails" class="event-description">
+          <div class="panel-subheading">Algemene informatie</div>
+            <p>U kan deze vaccinatie bij uw huisarts verkrijgen.<br>
+            Huisarts: Dr. House<br>
+            Telefoonnummer: 555-DRHOUSE<br>
+            <a>Maak een afspraak bij Dr. House.</a></p>
+        </div>
+      </timeline-panel>
+    </timeline-event>
+
+
+
+    <timeline-event side="right">
+      <timeline-date class="info timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+      <p><b>Dinsdag</b><br>10 januari 2017</p>
+      </timeline-date>
+      <timeline-badge class="timeline-badge timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <img src="icons/dentist.png" alt="hospi" width="50px" class="badge-img">
+      </timeline-badge>
+      <timeline-panel class="info timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <timeline-heading>
+          <h4>Jaarlijks bezoek aan tandarts</h4>
+        </timeline-heading>
+        <div class="event-checkbox"><input type="checkbox" ng-model="tandarts.showDetails" ng-init="tandarts.showDetails=false"> meer info</div>        
+        <div ng-show="tandarts.showDetails" class="event-description">
+          <div class="panel-subheading">Informatie over uw laatste visite</div>
+            <p>Tandarts: Tony Tand<br>
+            Datum: 10 januari 2016<br>
+            Telefoonnummer: 555-TONYTAND<br>
+            <a>Maak een afspraak bij Tony Tand.</a></p>
+
+          <div class="panel-subheading">Andere tandartsen in uw omgeving</div>
+
+<div class="rTable"> 
+<div class="rTableRow"> 
+	<div class="rTableHead">Naam</div>
+	<div class="rTableHead">Adres</div>
+	<div class="rTableHead">Telefoonnummer</div>
+	<div class="rTableHead">Geconventioneerd?</div>
+</div> 
+<div class="rTableRow"> 
+	<div class="rTableCell"><a>Jo Kies</a></div>
+	<div class="rTableCell">Fictielaan 5, 1234 Nepdorp</div>
+	<div class="rTableCell">01234567</div>
+	<div class="rTableCell">Ja</div>
+</div> 
+<div class="rTableRow"> 
+	<div class="rTableCell"><a>Dora Duur</a></div>
+	<div class="rTableCell">Goudlaan 7, 1234 Nepdorp</div>
+	<div class="rTableCell">01234568</div>
+	<div class="rTableCell">Nee</div>
+</div> 
+</div>
+
+         </div>
+      </timeline-panel>
+    </timeline-event>
+</timeline>
+<timeline>
+    <timeline-event side="right">
+      <timeline-date class="info timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+      <p><b>{{todayDay}}</b><br>{{todayText}}</p>
+      </timeline-date>
+      <timeline-panel class="info timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <timeline-heading>
+          <h4 id="vandaag">Vandaag</h4>
+        </timeline-heading>
+      </timeline-panel>
+    </timeline-event>
+</timeline>
+
+
+<!-- PAST EVENTS -->
+<timeline ng-show="showPast">
     <!-- can also hard-code to side="left" or side="right" -->
     <timeline-event ng-repeat="event in events" side="right">
 
@@ -16,9 +114,12 @@
       </timeline-date>
 
       <!-- uses angular-scroll-animate to give it some pop -->
-      <timeline-badge class="{{event.badgeClass}} timeline-hidden"
+<!--              <timeline-badge class="{{event.badgeClass}} timeline-hidden"
                       when-visible="animateElementIn" when-not-visible="animateElementOut">
-        <i class="glyphicon {{event.badgeIconClass}}"></i>
+                        <i class="glyphicon {{event.badgeIconClass}}"></i>    -->
+      <timeline-badge class="timeline-badge timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <img src="icons/{{event.icon}}.png" alt="hospi" width="50px" class="badge-img">
       </timeline-badge>
 
       <!-- uses angular-scroll-animate to give it some pop -->
@@ -26,9 +127,71 @@
                       when-visible="animateElementIn" when-not-visible="animateElementOut">
         <timeline-heading>
           <h4 ng-if="!event.type">Unknown event type</h4>
-          <h4 ng-if="event.type == 'consult'">Consultatie met {{event.physician}} <span ng-if="event.hospitalised == true">(tijdens opname)</span></h4>
+          <h4 ng-if="event.type == 'consult'">Consultatie met {{event.physician}}</h4>
+          <h4 ng-if="event.type == 'hospi'">Hospitalisatie in {{event.hnummer}}</h4>
           <h4 ng-if="event.type == 'farma'">Aankoop van {{event.productName}}</h4>
         </timeline-heading>
+
+<!-- HOSPITALISATION EVENTS -->
+
+        <div ng-if="event.type == 'hospi'">
+        <div class="event-checkbox"><input type="checkbox" ng-model="event.showDetails" ng-init="event.showDetails=false"> meer info over deze opnamedag</div>
+        <div ng-show="event.showDetails" ng-if="event.description" class="event-description">
+          <div class="panel-subheading">Algemene informatie</div>
+            <p>Beschrijving: {{event.description}}<br>
+            Specialisatie van de arts: {{event.physicianSpec}}<br></p>
+
+          <div class="panel-subheading">Contactgegevens</div>
+            <p>Plaats: {{event.location}}<br>
+            Telefoonnummer: </p>
+
+          <div class="panel-subheading" ng-if="event.physicians">Behandelend team</div>
+          TODO
+          <div class="panel-subheading" ng-if="event.costTotal">Kostenoverzicht</div>
+          <div ng-show="event.showDetails" ng-if="event.costTotal" class="event-costs"> 
+          <img src="icons/euro.png" alt="Euro symbol">           
+            <p>
+                Totale kost<br>
+                Tussenkomst ziekenfonds<br>
+                Persoonlijke tussenkomst
+            </p>
+            <p style="text-align: right">
+                {{event.costTotal}} EUR<br>
+                {{event.costZIV}} EUR<br>
+                {{event.costPerstus}} EUR
+            </p>
+            <p style="text-align: right"> <!-- http://stackoverflow.com/a/16241931 -->
+                100%<br>
+                {{(100*event.costZIV/event.costTotal)| number:0}}%<br>
+                {{100*event.costPerstus/event.costTotal| number:0}}%
+            </p>
+          </div>
+        </div>
+        <div ng-if="event.costs" class="event-checkbox">
+            <input type="checkbox" ng-model="event.costsDetailed" ng-init="event.costsDetailed=false"> gedetailleerd kostenoverzicht</div>
+
+        <div ng-show="event.costsDetailed" width="90%" class="event-costs">
+            <div class="panel-subheading">Gedetailleerd kostenoverzicht van de consultatie</div>
+            <table>
+                <tbody>
+                    <tr><th>Code verstrekking</th>
+                        <th>Totaal bedrag</th>
+                        <th>ZIV bedrag</th>
+                        <th>Eigen kost</th>
+                        <th>Percentage</th>
+                    </tr>
+                    <tr ng-repeat-start="c in event.costs">
+                        <td align="left"><input type="checkbox" ng-model="c.showNomenDescription" ng-init="c.showNomenDescription=false"> {{c.nomenclature}}</div></td>
+                        <td align="right">{{c.total}} EUR</td>
+                        <td align="right">{{c.ZIV}} EUR</td>
+                        <td align="right">{{c.perstus}} EUR</td>
+                        <td align="right">{{100*c.perstus/c.total| number:0}}%</td>
+                    </tr>
+                    <tr ng-repeat-end ng-show="c.showNomenDescription"><td colspan="42", align="left">Beschrijving: {{c.description}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
 
 <!-- GEZO EVENTS -->
 
@@ -36,11 +199,16 @@
         <div class="event-checkbox"><input type="checkbox" ng-model="event.showDetails" ng-init="checked=false"> meer info over de consultatie</div>
         <div ng-show="event.showDetails" ng-if="event.description" class="event-description">
           <div class="panel-subheading">Algemene informatie</div>
-            Beschrijving: {{event.description}}<br>
-            Plaats: {{event.location}}</p>
+            <p>Beschrijving: {{event.description}}<br>
+            Specialisatie van de arts: {{event.physicianSpec}}</p>
+
+          <div class="panel-subheading">Contactgegevens</div>
+            <p>Plaats: {{event.location}}<br>
+            Telefoonnummer: </p>
 
           <div class="panel-subheading" ng-if="event.costTotal">Kostenoverzicht</div>
-          <div ng-show="event.showDetails" ng-if="event.costTotal" class="event-costs">            
+          <div ng-show="event.showDetails" ng-if="event.costTotal" class="event-costs"> 
+          <img src="icons/euro.png" alt="Euro symbol">           
             <p>
                 Totale kost<br>
                 Tussenkomst ziekenfonds<br>
@@ -96,6 +264,10 @@
             Beschrijving: {{event.description}}
           </p>
           
+          <div class="panel-subheading">Contactgegevens</div>
+            <p>Plaats: {{event.location}}<br>
+            Telefoonnummer: </p>
+          
           <div class="panel-subheading">Codering</div>
           <p>CNK code: <i>{{event.cnk}}</i><br>
           ATC code(s): <i>{{event.atc}}</i></p>
@@ -122,12 +294,6 @@
 
 
         </div>
-        <div ng-if="event.content" ng-bind-html="event.contentHtml"></div>
-<!--
-        <timeline-footer ng-if="event.footerContentHtml">
-          <span ng-bind-html="event.footerContentHtml"></span>
-        </timeline-footer>
--->
       </timeline-panel>
     </timeline-event>
   </timeline>

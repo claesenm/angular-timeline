@@ -14,6 +14,7 @@ $timelinehpos: $datewidth+$timelinespacing+$timelinewidth/2;
 $panelhpos: $timelinehpos+$timelinespacing+$timelinewidth/2-$datewidth;
 
 @import 'angular-timeline-images';
+
 table, th, td {
     border: 1px solid #898989;
     border-collapse: collapse;
@@ -27,20 +28,33 @@ th {
     font-style: italic;
 }
 
-.rTable { 
-    display: table; 
+.rTable {   	
+  display: table;   	
+  width: 100%; 
 } 
-.rTableRow { 
-    display: table-row; 
-}
-.rTableHeading { 
-    display: table-header-group; 
-}
-.rTableBody { 
-    display: table-row-group;
+.rTableRow {   	
+  display: table-row; 
 } 
-.rTableFoot { 
-    display: table-footer-group; 
+.rTableHeading {   	
+  display: table-header-group;   	
+  background-color: #ddd; 
+} 
+.rTableCell, .rTableHead {   	
+  display: table-cell;   	
+  padding: 3px 10px;   	
+} 
+.rTableHeading {   	
+  display: table-header-group;   	
+  background-color: #ddd;   	
+  font-weight: bold; 
+} 
+.rTableFoot {   	
+  display: table-footer-group;   	
+  font-weight: bold;   	
+  background-color: #ddd; 
+} 
+.rTableBody {   	
+  display: table-row-group; 
 }
 
 .panel-subheading {
@@ -120,6 +134,16 @@ th {
   }
 }
 
+.timeline-badge{
+  background-color: $panelBackgroundColor;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.timeline-badge img{
+  border-radius: 50%;
+  max-width: 100%; 
+  vertical-align: middle;
+}
 timeline-badge.primary {
   background-color: #2e6da4 !important;
 }
