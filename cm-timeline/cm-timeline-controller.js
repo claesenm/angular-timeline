@@ -5,8 +5,14 @@ var CmtimelineCtrl = function($scope, $http) {
 
 	$scope.side = '';
 	$scope.lidano = 'Patricia';
-	$scope.timeout = 30;
 	$scope.urlstring = '&num-cpu-cores=1&memory-per-node=512mb';
+
+
+	// sleep time expects milliseconds
+	function sleep (time) {
+	  return new Promise((resolve) => setTimeout(resolve, time));
+	}
+
 
 /////////
 //
@@ -18,7 +24,7 @@ var CmtimelineCtrl = function($scope, $http) {
 		return new Date(CMstring.substr(0, 4) + "-" + CMstring.substr(4, 2) + "-" + CMstring.substr(6, 2));		
 	}
 	function Date2Day(date){
-		var weekDays = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"];
+		var weekDays = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
 		return weekDays[date.getUTCDay()];
 	}
 	function Date2Text(date){
@@ -48,92 +54,6 @@ var CmtimelineCtrl = function($scope, $http) {
 	}
 	$scope.events = [];
 
-/*	
-	$scope.events = [{
-		badgeClass: 'info',
-        type: 'consult',
-        badgeImage: 'obsgyn-icon.png',
-		badgeIconClass: 'glyphicon-check',
-		physician: 'dr. Oetker',
-        day: 'Vrijdag',
-        dateText: '2 december 2016',
-        date: new Date(),
-		when: '11 hours ago via Twitter',
-            eventColor: '#fffff',
-		content: 'Some awesome content.',
-        description: 'Bevalling met keizersnede.',
-        costTotal: '10.00',
-        costZIV: '9.00',
-        costPerstus: '1.00',
-        costs: [{nomenclature: '1234',
-                 description: 'blabla',
-                 total: '5.00',
-                 ZIV: '4.00',
-                 perstus: '1.00'},
-                 {nomenclature: '57859',
-                 description: "klLorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. " +
-		          "Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor." +
-		          "Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, " +
-		          "ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor." +
-		          "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                 total: '5.00',
-                 ZIV: '4.00',
-                 perstus: '1.00'}
-        ]
-	},{
-		badgeClass: 'info',
-        type: 'consult',
-        badgeImage: 'obsgyn-icon.png',
-		badgeIconClass: 'glyphicon-check',
-		physician: 'dr. Oetker',
-        day: 'Vrijdag',
-        dateText: '2 december 2016',
-        date: new Date(),
-		when: '11 hours ago via Twitter',
-            eventColor: '#fffff',
-		content: 'Some awesome content.',
-        description: 'Bevalling met keizersnede.',
-        costTotal: '10.00',
-        costZIV: '9.00',
-        costPerstus: '1.00',
-        costs: [{nomenclature: '1234',
-                 description: 'blabla',
-                 total: '5.00',
-                 ZIV: '4.00',
-                 perstus: '1.00'},
-                 {nomenclature: '57859',
-                 description: 'bloblu',
-                 total: '5.00',
-                 ZIV: '4.00',
-                 perstus: '1.00'}
-        ]
-
-        }, {
-		badgeClass: 'warning',
-		badgeIconClass: 'glyphicon-credit-card',
-		title: 'Second heading',
-        day: 'Vrijdag',
-        dateText: '2 december 2016',
-        date: new Date(),
-		when: '12 hours ago via Twitter',
-            eventColor: '#fffff',
-		content: 'More awesome content.'
-	}, {
-		badgeClass: 'default',
-		badgeIconClass: 'glyphicon-credit-card',
-		title: 'Third heading',
-        day: 'Vrijdag',
-        dateText: '2 december 2016',
-        date: new Date(),
-        textcontent: 'fjieofjoweif',
-        imgcontent: 'icons/red-brain-20.png',
-		titleContentHtml: '<img class="img-responsive" src="http://www.freeimages.com/assets/183333/1833326510/wood-weel-1444183-m.jpg">',
-		contentHtml: $scope.greeting,
-            eventColor: '#fffff',
-		footerContentHtml: '<a href="">Continue Reading</a>'
-	}];
-*/
-
 /////////
 //
 // GEZO QUERIES
@@ -149,14 +69,25 @@ var CmtimelineCtrl = function($scope, $http) {
             })
             .then(successCallback, errorCallback);
      }
+    $scope.queryGezoEventHospi = function(lidano, day, hospiEvent, successCallback, errorCallback){
+        var data = {lidano: lidano, day: day};
+        $http({
+                url: 'http://localhost:8090/jobs?context=tetraitesapi&appName=tetraitesapi&classPath=tetraitesapi.gezoEvents&sync=true' + $scope.urlstring,
+                method: "POST",
+                data: data
+            })
+            .then(successCallback, errorCallback);
+     }
 
 	function physicianSpec2Icon(spec){
 		if(spec.length < 1) return "unknown";
 		if(spec.search("tand") > -1) return "dentist";
-		if(spec.search("gynae") > -1) return "gynae";
+		if(spec.search("gyne") > -1) return "gynae";
 		if(spec.search("cardio") > -1) return "cardio";
 		if(spec.search("huisarts") > -1) return "gp";
 		if(spec.search("oftal") > -1) return "oftal";
+		if(spec.search("kinder") > -1) return "kinder";
+		if(spec.search("nucleair") > -1) return "nucleair";
 		return "unknown";
 	}
 
@@ -182,17 +113,17 @@ var CmtimelineCtrl = function($scope, $http) {
             icon: physicianSpec2Icon(eventData.verstrSpec),
             badgeClass: 'info', /* TODO */
             badgeImage: 'obsgyn-icon.png',
-            badgeIconClass: 'glyphicon-check',
-            costs: [{nomenclature: '1234',
-                     description: 'blabla',
-                     total: '5.00',
-                     ZIV: '4.00',
-                     perstus: '1.00'},
-                     {nomenclature: '57859',
-                     description: 'bloblu',
-                     total: '5.00',
-                     ZIV: '4.00',
-                     perstus: '1.00'}]
+            badgeIconClass: 'glyphicon-check'
+//             costs: [{nomenclature: '1234',
+//                      description: 'blabla',
+//                      total: '5.00',
+//                      ZIV: '4.00',
+//                      perstus: '1.00'},
+//                      {nomenclature: '57859',
+//                      description: 'bloblu',
+//                      total: '5.00',
+//                      ZIV: '4.00',
+//                      perstus: '1.00'}]
         };
     }
 
@@ -219,23 +150,85 @@ var CmtimelineCtrl = function($scope, $http) {
     		var bed = parseFloat(timelineEntry.totaal.toFixed(2));
     		var ziv = parseFloat(timelineEntry.ziv.toFixed(2));
     		var perstus = parseFloat(timelineEntry.perstus.toFixed(2));
-			var event = {
-				day: Date2Day(date),
-				dateText: Date2Text(date),
-				date: date,
-				type: 'hospi',
-				icon: 'hospi',
-				location: '',
-				costTotal: bed,
-				costZIV: ziv,
-				costPerstus: perstus,
-				consultations: []
-			}
-			$scope.events = concatAndSort($scope.events, [event]);
+
 			$scope.queryGezoEvent($scope.lidano, timelineEntry.date,
 						function(response){
+							console.log(response);
 							var gezoEvents = response.data.result.data.map(processGezoEvent);
-							$scope.greeting = event;
+							console.log(gezoEvents);
+							console.log(gezoEvents[0]);
+
+							// build list of (unique) physicians
+							var physicians = [];
+							var physDict = {};
+							for(var i = 0; i < gezoEvents.length; i++) {
+								if(gezoEvents[i].physician){
+									if(!physicians.length){
+										physDict[gezoEvents[i].physician] = true;
+										physicians.push({name: gezoEvents[i].physician, 
+											spec: gezoEvents[i].physicianSpec,
+											icon: gezoEvents[i].icon});
+									}else if(!physDict[gezoEvents[i].physician]){
+										physDict[gezoEvents[i].physician] = true;
+										physicians.push({name: gezoEvents[i].physician, 
+											spec: gezoEvents[i].physicianSpec,
+											icon: gezoEvents[i].icon});										
+									}
+								}
+							}
+
+							var event = {
+								day: Date2Day(date),
+								dateText: Date2Text(date),
+								date: date,
+								type: 'hospi',
+								icon: 'hospi',
+								costTotal: bed,
+								costZIV: ziv,
+								costPerstus: perstus,
+								consultations: gezoEvents,
+								physicians: physicians,
+								location: gezoEvents[0].location
+							}
+							$scope.events = concatAndSort($scope.events, [event]);
+							console.log($scope.events);
+						},
+						function(response){
+							console.log(response);
+							$scope.events.concat([{type: 'consult', physician: 'dr error'}]);
+							throw new Error('Error in queryGezoEvent');
+						});
+/*
+			$http({
+					url: 'http://localhost:8090/jobs?context=tetraitesapi&appName=tetraitesapi&classPath=tetraitesapi.gezoEvents&sync=true' + $scope.urlstring,
+					method: "POST",
+					data: {lidano: $scope.lidano, day: timelineEntry.date}
+				})
+				.then(function(response){
+							console.log(response);
+							consultations.resolve(response.data.result.data.map(processGezoEvent));
+							event.location = event.consultations[0].location; //dirty
+							$scope.events = concatAndSort($scope.events, [event]);
+// 							$scope.greeting = event;
+// 							console.log(gezoEvents);
+// 							console.log(gezoEvents[0]);
+// 							event.consultations.concat(gezoEvents);
+// 							event.location = event.consultations[0].location // dirty
+// 							console.log($scope.events);
+						}
+						, function(response){
+							console.log(response);
+							consultations.reject("Error resolving consultations");
+							$scope.events.concat([{type: 'consult', physician: 'dr error'}]);
+							throw new Error('Error in queryGezoEvent');
+						});
+*/
+/*
+			$scope.queryGezoEvent($scope.lidano, timelineEntry.date,
+						function(response){
+							console.log(response);
+							var gezoEvents = response.data.result.data.map(processGezoEvent);
+// 							$scope.greeting = event;
 							console.log(gezoEvents);
 							console.log(gezoEvents[0]);
 							event.consultations.concat(gezoEvents);
@@ -247,7 +240,7 @@ var CmtimelineCtrl = function($scope, $http) {
 							$scope.events.concat([{type: 'consult', physician: 'dr error'}]);
 							throw new Error('Error in queryGezoEvent');
 						});
-
+*/
 		}else{
 			// timeline entry is NOT a hospitalisation -> add as consultation
 			$scope.queryGezoEvent($scope.lidano, timelineEntry.date,
@@ -275,64 +268,6 @@ var CmtimelineCtrl = function($scope, $http) {
             function(response){
                 throw new Error('Error in queryGezoTimeline');
             });
-
-
-
-// 	$scope.queryGezoEvent($scope.lidano, 20130110,
-// 			function(response){
-// 				var gezoEvents = response.data.result.data.map(processGezoEvent);
-// 				console.log(gezoEvents);
-// 				console.log(gezoEvents[0]);
-// 				$scope.events = concatAndSort($scope.events, gezoEvents);
-// 				console.log($scope.events);
-// 			},
-// 			function(response){
-// 				console.log(response);
-// 				$scope.greeting = 'ERROR: ' + JSON.stringify(response);
-// 				throw new Error('Error in queryGezoEvent');
-// 			});
-
-// 	$scope.queryGezoEvent($scope.lidano, 20140110,
-// 			function(response){
-// 				var gezoEvents = response.data.result.data.map(processGezoEvent);
-// 				console.log(gezoEvents);
-// 				console.log(gezoEvents[0]);
-// 				$scope.events = concatAndSort($scope.events, gezoEvents);
-// 				console.log($scope.events);
-// 			},
-// 			function(response){
-// 				console.log(response);
-// 				$scope.greeting = 'ERROR: ' + JSON.stringify(response);
-// 				throw new Error('Error in queryGezoEvent');
-// 			});
-
-	$scope.queryGezoEvent($scope.lidano, 20150223,
-			function(response){
-				var gezoEvents = response.data.result.data.map(processGezoEvent);
-				console.log(gezoEvents);
-				console.log(gezoEvents[0]);
-				$scope.events = concatAndSort($scope.events, gezoEvents);
-				console.log($scope.events);
-			},
-			function(response){
-				console.log(response);
-				$scope.greeting = 'ERROR: ' + JSON.stringify(response);
-				throw new Error('Error in queryGezoEvent');
-			});
-
-	$scope.queryGezoEvent($scope.lidano, 20160110,
-			function(response){
-				var gezoEvents = response.data.result.data.map(processGezoEvent);
-				console.log(gezoEvents);
-				console.log(gezoEvents[0]);
-				$scope.events = concatAndSort($scope.events, gezoEvents);
-				console.log($scope.events);
-			},
-			function(response){
-				console.log(response);
-				$scope.greeting = 'ERROR: ' + JSON.stringify(response);
-				throw new Error('Error in queryGezoEvent');
-			});
 
 /////////
 //
@@ -379,21 +314,40 @@ var CmtimelineCtrl = function($scope, $http) {
         };
     }
 
-	$scope.queryFarmaEvent('Karel', 20111001,
+    $scope.queryFarmaTimeline = function(lidano, successCallback, errorCallback){
+        var data = {lidano: lidano};
+        $http({
+                url: 'http://localhost:8090/jobs?context=tetraitesapi&appName=tetraitesapi&classPath=tetraitesapi.farmaTimeline&sync=true' + $scope.urlstring,
+                method: "POST",
+                data: data
+            })
+            .then(successCallback, errorCallback);
+    }
+
+	function processFarmaTimelineEntry(timelineEntry){
+		$scope.queryFarmaEvent($scope.lidano, timelineEntry.date,
+				function(response){
+					var farmaEvents = response.data.result.data.map(processFarmaEvent);
+					console.log(farmaEvents);
+					console.log(farmaEvents[0]);
+					$scope.events = concatAndSort($scope.events, farmaEvents);
+					console.log($scope.events);
+				},
+				function(response){
+					console.log(response);
+					$scope.greeting = 'ERROR: ' + JSON.stringify(response);
+					$scope.events.concat([{type: 'consult', physician: 'dr error'}]);
+					throw new Error('Error in queryFarmaEvent');
+				});
+	}
+
+    $scope.queryFarmaTimeline($scope.lidano,
             function(response){
-                var farmaEvents = response.data.result.data.map(processFarmaEvent);
-                console.log(farmaEvents);
-                console.log(farmaEvents[0]);
-                $scope.events = concatAndSort($scope.events, farmaEvents);
-                console.log($scope.events);
+            	response.data.result.data.map(processFarmaTimelineEntry);
             },
             function(response){
-            	console.log(response);
-                $scope.greeting = 'ERROR: ' + JSON.stringify(response);
-       			$scope.events.concat([{type: 'consult', physician: 'dr error'}]);
-                throw new Error('Error in queryGezoEvent');
+                throw new Error('Error in queryGezoTimeline');
             });
-
 
 /////////
 //
